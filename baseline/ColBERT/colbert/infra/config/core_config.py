@@ -28,15 +28,20 @@ class CoreConfig:
         for field in fields(self):
             field_val = getattr(self, field.name)
 
-            if isinstance(field_val, DefaultVal) or field_val is None:
-                setattr(self, field.name, field.default.val)
+            if isinstance(field_val, DefaultVal):
+                setattr(self, field.name, field_val.val)
+            elif field_val is None and field.default is not dataclasses.MISSING:
+                setattr(self, field.name, field.default)
 
             if not isinstance(field_val, DefaultVal):
                 self.assigned[field.name] = True
     
     def assign_defaults(self):
         for field in fields(self):
-            setattr(self, field.name, field.default.val)
+            if isinstance(field.default, DefaultVal):
+                setattr(self, field.name, field.default.val)
+            else:
+                setattr(self, field.name, field.default)
             self.assigned[field.name] = True
 
     def configure(self, ignore_unrecognized=True, **kw_args):

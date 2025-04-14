@@ -5,7 +5,8 @@ import __main__
 from dataclasses import dataclass
 from colbert.utils.utils import timestamp
 
-from .core_config import DefaultVal
+from .core_config import DefaultVal  # Ensure DefaultVal is defined in core_config.py or replace with its correct definition
+from dataclasses import field
 
 
 @dataclass
@@ -15,21 +16,21 @@ class RunSettings:
         so these aren't soft defaults in that specific context.
     """
 
-    overwrite: bool = DefaultVal(False)
+    overwrite: bool = field(default_factory=lambda: False)
 
-    root: str = DefaultVal(os.path.join(os.getcwd(), 'experiments'))
-    experiment: str = DefaultVal('default')
+    root: str = field(default_factory=lambda: os.path.join(os.getcwd(), 'experiments'))
+    experiment: str = field(default_factory=lambda: 'default')
 
-    index_root: str = DefaultVal(None)
-    name: str = DefaultVal(timestamp(daydir=True))
+    index_root: str = field(default_factory=lambda: None)
+    name: str = field(default_factory=lambda: timestamp(daydir=True))
 
-    rank: int = DefaultVal(0)
-    nranks: int = DefaultVal(1)
-    amp: bool = DefaultVal(True)
+    rank: int = field(default_factory=lambda: 1)
+    nranks: int = field(default_factory=lambda: 1)
+    amp: bool = field(default_factory=lambda: True)
 
     total_visible_gpus = torch.cuda.device_count()
     # total_visible_gpus = 0
-    gpus: int = DefaultVal(total_visible_gpus)
+    gpus: int = field(default_factory=lambda: torch.cuda.device_count())
 
     @property
     def gpus_(self):
@@ -90,79 +91,79 @@ class RunSettings:
 
 @dataclass
 class TokenizerSettings:
-    query_token_id: str = DefaultVal("[unused0]")
-    doc_token_id: str = DefaultVal("[unused1]")
-    query_token: str = DefaultVal("[Q]")
-    doc_token: str = DefaultVal("[D]")
+    query_token_id: str = field(default_factory=lambda: "[unused0]")
+    doc_token_id: str = field(default_factory=lambda: "[unused1]")
+    query_token: str = field(default_factory=lambda: "[Q]")
+    doc_token: str = field(default_factory=lambda: "[D]")
 
 
 @dataclass
 class ResourceSettings:
-    checkpoint: str = DefaultVal(None)
-    triples: str = DefaultVal(None)
-    collection: str = DefaultVal(None)
-    queries: str = DefaultVal(None)
-    index_name: str = DefaultVal(None)
+    checkpoint: str = field(default_factory=lambda: None)
+    triples: str = field(default_factory=lambda: None)
+    collection: str = field(default_factory=lambda: None)
+    queries: str = field(default_factory=lambda: None)
+    index_name: str = field(default_factory=lambda: None)
 
 
 @dataclass
 class DocSettings:
-    dim: int = DefaultVal(128)
-    doc_maxlen: int = DefaultVal(220)
-    mask_punctuation: bool = DefaultVal(True)
+    dim: int = field(default_factory=lambda: 128)
+    doc_maxlen: int = field(default_factory=lambda: 220)
+    mask_punctuation: bool = field(default_factory=lambda: True)
 
 
 @dataclass
 class QuerySettings:
-    query_maxlen: int = DefaultVal(32)
-    attend_to_mask_tokens : bool = DefaultVal(False)
-    interaction: str = DefaultVal('colbert')
+    query_maxlen: int = field(default_factory=lambda: 32)
+    attend_to_mask_tokens : bool = field(default_factory=lambda: False)
+    interaction: str = field(default_factory=lambda: 'colbert')
 
 
 @dataclass
 class TrainingSettings:
-    similarity: str = DefaultVal('cosine')
+    similarity: str = field(default_factory=lambda: 'cosine')
 
-    bsize: int = DefaultVal(32)
+    bsize: int = field(default_factory=lambda: 32)
 
-    accumsteps: int = DefaultVal(1)
+    accumsteps: int = field(default_factory=lambda: 1)
 
-    lr: float = DefaultVal(3e-06)
+    lr: float = field(default_factory=lambda: 3e-06)
 
-    maxsteps: int = DefaultVal(500_000)
+    maxsteps: int = field(default_factory=lambda: 500_000)
 
-    save_every: int = DefaultVal(None)
+    save_every: int = field(default_factory=lambda: None)
 
-    resume: bool = DefaultVal(False)
+    resume: bool = field(default_factory=lambda: False)
 
     ## NEW:
-    warmup: int = DefaultVal(None)
+    warmup: int = field(default_factory=lambda: None)
 
-    warmup_bert: int = DefaultVal(None)
+    warmup_bert: int = field(default_factory=lambda: None)
 
-    relu: bool = DefaultVal(False)
+    relu: bool = field(default_factory=lambda: False)
 
-    nway: int = DefaultVal(2)
+    nway: int = field(default_factory=lambda: 2)
 
-    use_ib_negatives: bool = DefaultVal(False)
+    use_ib_negatives: bool = field(default_factory=lambda: False)
 
-    reranker: bool = DefaultVal(False)
+    reranker: bool = field(default_factory=lambda: False)
 
-    distillation_alpha: float = DefaultVal(1.0)
+    distillation_alpha: float = field(default_factory=lambda: 1.0)
 
-    ignore_scores: bool = DefaultVal(False)
+    ignore_scores: bool = field(default_factory=lambda: False)
 
-    model_name: str = DefaultVal("bert-base-uncased")
+    model_name: str = field(default_factory=lambda: "bert-base-uncased")
 
 @dataclass
 class IndexingSettings:
-    index_path: str = DefaultVal(None)
+    index_path: str = field(default_factory=lambda: None)
 
-    nbits: int = DefaultVal(1)
+    nbits: int = field(default_factory=lambda: 1)
 
-    kmeans_niters: int = DefaultVal(4)
+    kmeans_niters: int = field(default_factory=lambda: 4)
 
-    resume: bool = DefaultVal(False)
+    resume: bool = field(default_factory=lambda: False)
 
     @property
     def index_path_(self):
@@ -170,6 +171,6 @@ class IndexingSettings:
 
 @dataclass
 class SearchSettings:
-    ncells: int = DefaultVal(None)
-    centroid_score_threshold: float = DefaultVal(None)
-    ndocs: int = DefaultVal(None)
+    ncells: int = field(default_factory=lambda: None)
+    centroid_score_threshold: float = field(default_factory=lambda: None)
+    ndocs: int = field(default_factory=lambda: None)

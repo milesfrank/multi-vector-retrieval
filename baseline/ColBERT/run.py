@@ -27,6 +27,7 @@ from script.evaluation import performance_metric
 
 def delete_file_if_exist(dire):
     if os.path.exists(dire):
+        # return
         command = 'rm -rf %s' % dire
         print(command)
         os.system(command)
@@ -46,15 +47,15 @@ def get_n_chunk(base_dir: str):
 
 
 def build_index_official(username: str, dataset: str):
-    colbert_project_path = f'/home/{username}/multi-vector-retrieval/baseline/ColBERT'
-    raw_data_path = f'/home/{username}/Dataset/multi-vector-retrieval/RawData'
+    colbert_project_path = f'/u/mfrank14/csc200/multi-vector-retrieval/baseline/ColBERT'
+    raw_data_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/RawData'
     pretrain_index_path = os.path.join(raw_data_path, 'colbert-pretrain/colbertv2.0')
     document_data_path = os.path.join(raw_data_path, f'{dataset}/document')
-    embedding_path = f'/home/{username}/Dataset/multi-vector-retrieval/Embedding/{dataset}'
+    embedding_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Embedding/{dataset}'
     base_embedding_path = os.path.join(embedding_path, 'base_embedding')
     query_embedding_filename = os.path.join(embedding_path, 'query_embedding.npy')
-    index_path = f'/home/{username}/Dataset/multi-vector-retrieval/Index/{dataset}'
-    result_performance_path = f'/home/{username}/Dataset/multi-vector-retrieval/Result/performance'
+    index_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Index/{dataset}'
+    result_performance_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Result/performance'
 
     n_gpu = torch.cuda.device_count()
     # torch.set_num_threads(12)
@@ -75,16 +76,42 @@ def build_index_official(username: str, dataset: str):
                                                                                       'collection.tsv'),
                                                               embedding_filename=base_embedding_path,
                                                               overwrite=True)
-    index_origin_path = os.path.join(colbert_project_path, f'experiments/{dataset}/indexes/{dataset}')
-    delete_file_if_exist(index_path)
-    os.makedirs(index_path, exist_ok=False)
-    index_new_path = os.path.join(index_path, 'plaid')
-    os.system(f'mv {index_origin_path} {index_new_path}')
-    print("finish indexing, start searching")
+
+    # index_origin_path = os.path.join(colbert_project_path, f'experiments/{dataset}/indexes/{dataset}')
+    # print(index_origin_path)
+
+    # for root, dirs, files in os.walk(index_origin_path):
+    #     print(files)
+    
+    # print(0)
+
+    # for root, dirs, files in os.walk(index_path):
+    #     print(files)
+
+    # delete_file_if_exist(index_path)
+    # print(1)
+    # os.makedirs(index_path, exist_ok=False)
+    # print(2)
+    # index_new_path = os.path.join(index_path, 'plaid')
+    # print(3)
+    # os.system(f'mv {index_origin_path} {index_new_path}')
+    # print(index_new_path)
+    # # Print all files in index_new_path
+    # for root, dirs, files in os.walk(index_new_path):
+    #     print(files)
+
+    # print(4)
+    # print("finish indexing, start searching")
+    # print(5)
 
     build_index_json = {'build_index_time (s)': build_index_time, 'encode_passage_time (s)': encode_passage_time}
+    print(6)
     with open(os.path.join(result_performance_path, f'{dataset}-build_index-plaid-.json'), 'w') as f:
         json.dump(build_index_json, f)
+    print(7)
+
+    with open(os.path.join(result_performance_path, f'{dataset}-build_index-plaid-.json'), 'r') as f:
+        print(f)
 
     with Run().context(
             RunConfig(nranks=n_gpu, experiment=dataset, root=os.path.join(colbert_project_path, 'result'))):
@@ -93,7 +120,7 @@ def build_index_official(username: str, dataset: str):
             collection=os.path.join(document_data_path, 'collection.tsv')
         )
         searcher = Searcher(checkpoint=pretrain_index_path,
-                            index=index_new_path,
+                            index=index_path,
                             config=config)
         queries = Queries(
             path=os.path.join(document_data_path, 'queries.dev.tsv'))
@@ -120,15 +147,15 @@ def build_index_official(username: str, dataset: str):
 
 
 def encode_query_cpu(username: str, dataset: str):
-    colbert_project_path = f'/home/{username}/multi-vector-retrieval/baseline/ColBERT'
-    raw_data_path = f'/home/{username}/Dataset/multi-vector-retrieval/RawData'
+    colbert_project_path = f'/u/mfrank14/csc200/multi-vector-retrieval/baseline/ColBERT'
+    raw_data_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/RawData'
     pretrain_index_path = os.path.join(raw_data_path, 'colbert-pretrain/colbertv2.0')
     document_data_path = os.path.join(raw_data_path, f'{dataset}/document')
-    embedding_path = f'/home/{username}/Dataset/multi-vector-retrieval/Embedding/{dataset}'
+    embedding_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Embedding/{dataset}'
     base_embedding_path = os.path.join(embedding_path, 'base_embedding')
     query_embedding_filename = os.path.join(embedding_path, 'query_embedding.npy')
-    index_path = f'/home/{username}/Dataset/multi-vector-retrieval/Index/{dataset}'
-    result_performance_path = f'/home/{username}/Dataset/multi-vector-retrieval/Result/performance'
+    index_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Index/{dataset}'
+    result_performance_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Result/performance'
 
     n_gpu = torch.cuda.device_count()
     # torch.set_num_threads(12)
@@ -165,9 +192,9 @@ def encode_query_cpu(username: str, dataset: str):
 
 
 def build_index_generate(username: str, dataset: str):
-    colbert_project_path = f'/home/{username}/multi-vector-retrieval/baseline/ColBERT'
-    index_path = f'/home/{username}/Dataset/multi-vector-retrieval/Index/{dataset}'
-    result_performance_path = f'/home/{username}/Dataset/multi-vector-retrieval/Result/performance'
+    colbert_project_path = f'/u/mfrank14/csc200/multi-vector-retrieval/baseline/ColBERT'
+    index_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Index/{dataset}'
+    result_performance_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Result/performance'
 
     n_gpu = torch.cuda.device_count()
     # torch.set_num_threads(12)
@@ -183,14 +210,14 @@ def build_index_generate(username: str, dataset: str):
 
 
 def load_training_query(username: str, dataset: str, n_sample_query: int):
-    colbert_project_path = f'/home/{username}/multi-vector-retrieval/baseline/ColBERT'
-    raw_data_path = f'/home/{username}/Dataset/multi-vector-retrieval/RawData'
+    colbert_project_path = f'/u/mfrank14/csc200/multi-vector-retrieval/baseline/ColBERT'
+    raw_data_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/RawData'
     pretrain_index_path = os.path.join(raw_data_path, 'colbert-pretrain/colbertv2.0')
     document_data_path = os.path.join(raw_data_path, f'{dataset}/document')
-    embedding_path = f'/home/{username}/Dataset/multi-vector-retrieval/Embedding/{dataset}'
+    embedding_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Embedding/{dataset}'
     base_embedding_path = os.path.join(embedding_path, 'base_embedding')
     query_embedding_filename = os.path.join(embedding_path, 'query_embedding.npy')
-    index_path = f'/home/{username}/Dataset/multi-vector-retrieval/Index/{dataset}'
+    index_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Index/{dataset}'
 
     n_gpu = torch.cuda.device_count()
     print(f'# gpu {n_gpu}')
@@ -214,14 +241,14 @@ def load_training_query(username: str, dataset: str, n_sample_query: int):
 
 
 def load_dev_query(username: str, dataset: str, n_sample_query: int):
-    colbert_project_path = f'/home/{username}/multi-vector-retrieval/baseline/ColBERT'
-    raw_data_path = f'/home/{username}/Dataset/multi-vector-retrieval/RawData'
+    colbert_project_path = f'/u/mfrank14/csc200/multi-vector-retrieval/baseline/ColBERT'
+    raw_data_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/RawData'
     pretrain_index_path = os.path.join(raw_data_path, 'colbert-pretrain/colbertv2.0')
     document_data_path = os.path.join(raw_data_path, f'{dataset}/document')
-    embedding_path = f'/home/{username}/Dataset/multi-vector-retrieval/Embedding/{dataset}'
+    embedding_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Embedding/{dataset}'
     base_embedding_path = os.path.join(embedding_path, 'base_embedding')
     query_embedding_filename = os.path.join(embedding_path, 'query_embedding.npy')
-    index_path = f'/home/{username}/Dataset/multi-vector-retrieval/Index/{dataset}'
+    index_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Index/{dataset}'
 
     n_gpu = torch.cuda.device_count()
     print(f'# gpu {n_gpu}')
@@ -245,15 +272,15 @@ def load_dev_query(username: str, dataset: str, n_sample_query: int):
 
 
 def retrieval_official(username: str, dataset: str, topk: int, search_config_l: list):
-    colbert_project_path = f'/home/{username}/multi-vector-retrieval/baseline/ColBERT'
-    raw_data_path = f'/home/{username}/Dataset/multi-vector-retrieval/RawData'
+    colbert_project_path = f'/u/mfrank14/csc200/multi-vector-retrieval/baseline/ColBERT'
+    raw_data_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/RawData'
     pretrain_index_path = os.path.join(raw_data_path, 'colbert-pretrain/colbertv2.0')
     document_data_path = os.path.join(raw_data_path, f'{dataset}/document')
-    embedding_path = f'/home/{username}/Dataset/multi-vector-retrieval/Embedding/{dataset}'
+    embedding_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Embedding/{dataset}'
     query_embedding_filename = os.path.join(embedding_path, 'query_embedding.npy')
-    index_path = f'/home/{username}/Dataset/multi-vector-retrieval/Index/{dataset}'
-    result_performance_path = f'/home/{username}/Dataset/multi-vector-retrieval/Result/performance'
-    result_answer_path = f'/home/{username}/Dataset/multi-vector-retrieval/Result/answer'
+    index_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Index/{dataset}'
+    result_performance_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Result/performance'
+    result_answer_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Result/answer'
     query_text_filename = os.path.join(document_data_path, 'queries.dev.tsv')
 
     n_gpu = torch.cuda.device_count()
@@ -339,7 +366,7 @@ def retrieval_official(username: str, dataset: str, topk: int, search_config_l: 
         }
 
         method_performance_name = f'{dataset}-retrieval-{module_name}-top{topk}-{build_index_suffix}-{retrieval_suffix}.json'
-        result_performance_path = f'/home/{username}/Dataset/multi-vector-retrieval/Result/performance'
+        result_performance_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Result/performance'
         performance_filename = os.path.join(result_performance_path, method_performance_name)
         with open(performance_filename, "w") as f:
             json.dump(retrieval_info_m, f)
@@ -351,7 +378,7 @@ def retrieval_official(username: str, dataset: str, topk: int, search_config_l: 
         if success_l:
             df['success'] = success_l
         single_query_performance_name = f'{dataset}-retrieval-{module_name}-top{topk}-{build_index_suffix}-{retrieval_suffix}.csv'
-        result_performance_path = f'/home/{username}/Dataset/multi-vector-retrieval/Result/single_query_performance'
+        result_performance_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Result/single_query_performance'
         single_query_performance_filename = os.path.join(result_performance_path, single_query_performance_name)
         df.to_csv(single_query_performance_filename, index=True)
 
@@ -373,15 +400,15 @@ def retrieval_official(username: str, dataset: str, topk: int, search_config_l: 
 
 
 def retrieval_end2end_single(username: str, dataset: str, topk: int, search_config_l: list):
-    colbert_project_path = f'/home/{username}/multi-vector-retrieval/baseline/ColBERT'
-    raw_data_path = f'/home/{username}/Dataset/multi-vector-retrieval/RawData'
+    colbert_project_path = f'/u/mfrank14/csc200/multi-vector-retrieval/baseline/ColBERT'
+    raw_data_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/RawData'
     pretrain_index_path = os.path.join(raw_data_path, 'colbert-pretrain/colbertv2.0')
     document_data_path = os.path.join(raw_data_path, f'{dataset}/document')
-    embedding_path = f'/home/{username}/Dataset/multi-vector-retrieval/Embedding/{dataset}'
+    embedding_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Embedding/{dataset}'
     query_embedding_filename = os.path.join(embedding_path, 'query_embedding.npy')
-    index_path = f'/home/{username}/Dataset/multi-vector-retrieval/Index/{dataset}'
-    result_performance_path = f'/home/{username}/Dataset/multi-vector-retrieval/end2end/Result/performance'
-    result_answer_path = f'/home/{username}/Dataset/multi-vector-retrieval/end2end/Result/answer'
+    index_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Index/{dataset}'
+    result_performance_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/end2end/Result/performance'
+    result_answer_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/end2end/Result/answer'
     query_text_filename = os.path.join(document_data_path, 'queries.dev.tsv')
 
     n_gpu = torch.cuda.device_count()
@@ -434,7 +461,7 @@ def retrieval_end2end_single(username: str, dataset: str, topk: int, search_conf
             build_index_suffix = ''
             retrieval_suffix = f'ndocs_{searcher.config.ndocs}-ncells_{searcher.config.ncells}-' \
                                f'centroid_score_threshold_{para_score_thres}-n_thread_{search_config["n_thread"]}'
-            output_path = f'/home/{username}/Dataset/multi-vector-retrieval/end2end/Result/performance'
+            output_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/end2end/Result/performance'
             output_filename = os.path.join(output_path,
                                            f'{dataset}-retrieval-Plaid-end2end-top{topk}-{build_index_suffix}-{retrieval_suffix}-time.json')
             with open(output_filename, 'w') as f:
@@ -461,15 +488,15 @@ def retrieval_end2end_single(username: str, dataset: str, topk: int, search_conf
 
 
 def retrieval_end2end_batch(username: str, dataset: str, topk: int, search_config_l: list):
-    colbert_project_path = f'/home/{username}/multi-vector-retrieval/baseline/ColBERT'
-    raw_data_path = f'/home/{username}/Dataset/multi-vector-retrieval/RawData'
+    colbert_project_path = f'/u/mfrank14/csc200/multi-vector-retrieval/baseline/ColBERT'
+    raw_data_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/RawData'
     pretrain_index_path = os.path.join(raw_data_path, 'colbert-pretrain/colbertv2.0')
     document_data_path = os.path.join(raw_data_path, f'{dataset}/document')
-    embedding_path = f'/home/{username}/Dataset/multi-vector-retrieval/Embedding/{dataset}'
+    embedding_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Embedding/{dataset}'
     query_embedding_filename = os.path.join(embedding_path, 'query_embedding.npy')
-    index_path = f'/home/{username}/Dataset/multi-vector-retrieval/Index/{dataset}'
-    result_performance_path = f'/home/{username}/Dataset/multi-vector-retrieval/end2end/Result/performance'
-    result_answer_path = f'/home/{username}/Dataset/multi-vector-retrieval/end2end/Result/answer'
+    index_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Index/{dataset}'
+    result_performance_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/end2end/Result/performance'
+    result_answer_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/end2end/Result/answer'
     query_text_filename = os.path.join(document_data_path, 'queries.dev.tsv')
 
     n_gpu = torch.cuda.device_count()
@@ -522,7 +549,7 @@ def retrieval_end2end_batch(username: str, dataset: str, topk: int, search_confi
             build_index_suffix = ''
             retrieval_suffix = f'ndocs_{searcher.config.ndocs}-ncells_{searcher.config.ncells}-' \
                                f'centroid_score_threshold_{para_score_thres}-n_thread_{search_config["n_thread"]}'
-            output_path = f'/home/{username}/Dataset/multi-vector-retrieval/end2end/Result/performance'
+            output_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/end2end/Result/performance'
             output_filename = os.path.join(output_path,
                                            f'{dataset}-retrieval-Plaid-end2end-top{topk}-{build_index_suffix}-{retrieval_suffix}-time.json')
             with open(output_filename, 'w') as f:

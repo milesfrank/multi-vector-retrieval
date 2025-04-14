@@ -43,10 +43,10 @@ def get_n_chunk(base_dir: str):
 
 def build_index(username: str, dataset: str,
                 n_table: int = 32, hashes_per_table: int = -1):
-    index_path = f'/home/{username}/Dataset/multi-vector-retrieval/Index/{dataset}'
+    index_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Index/{dataset}'
     plaid_index_path = os.path.join(index_path, 'plaid')
 
-    embedding_path = f'/home/{username}/Dataset/multi-vector-retrieval/Embedding/{dataset}'
+    embedding_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Embedding/{dataset}'
 
     dessert_index_path = os.path.join(index_path, 'dessert')
 

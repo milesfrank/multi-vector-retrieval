@@ -34,6 +34,11 @@ class Launcher:
         port = str(12355 + rng.randint(0, 1000))  # randomize the port to avoid collision on launching several jobs.
 
         all_procs = []
+        print(self.nranks)
+
+        if self.nranks == 0:
+            self.nranks = 1
+
         for new_rank in range(0, self.nranks):
             assert isinstance(custom_config, BaseConfig)
             assert isinstance(custom_config, RunSettings)
@@ -42,6 +47,8 @@ class Launcher:
 
             args_ = (self.callee, port, return_value_queue, new_config, *args)
             all_procs.append(mp.Process(target=setup_new_process, args=args_))
+
+        print(all_procs)
 
         # Clear GPU space (e.g., after a `Searcher` on GPU-0 is deleted)
         # TODO: Generalize this from GPU-0 only!

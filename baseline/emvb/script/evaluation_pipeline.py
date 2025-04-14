@@ -28,10 +28,10 @@ def save_retrieval_result(est_dist_l: np.ndarray, est_id_l: np.ndarray,
 
 
 def load_query(username: str, dataset: str):
-    embedding_dir = f'/home/{username}/Dataset/multi-vector-retrieval/Embedding/{dataset}/'
+    embedding_dir = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Embedding/{dataset}/'
     query_l = np.load(os.path.join(embedding_dir, 'query_embedding.npy'))
 
-    rawdata_path = f'/home/{username}/Dataset/multi-vector-retrieval/RawData/{dataset}'
+    rawdata_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/RawData/{dataset}'
 
     query_text_filename = os.path.join(rawdata_path, f'document/queries.dev.tsv')
     if os.path.exists(query_text_filename):
@@ -66,7 +66,7 @@ def approximate_solution_retrieval_outter(username: str, dataset: str,
             build_index_suffix=build_index_suffix,
             retrieval_config=retrieval_config)
 
-        result_answer_path = f'/home/{username}/Dataset/multi-vector-retrieval/Result/answer/'
+        result_answer_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Result/answer/'
         method_ans_name = f'{dataset}-{method_name}-top{topk}-{build_index_suffix}-{retrieval_suffix}.tsv'
         retrieval_result_filename = os.path.join(result_answer_path, method_ans_name)
 
@@ -90,7 +90,7 @@ def approximate_solution_retrieval_outter(username: str, dataset: str,
         if 'n_centroid_f' in retrieval_info_m['build_index']:
             del retrieval_info_m['build_index']['n_centroid_f']
         method_performance_name = f'{dataset}-retrieval-{method_name}-top{topk}-{build_index_suffix}-{retrieval_suffix}.json'
-        result_performance_path = f'/home/{username}/Dataset/multi-vector-retrieval/Result/performance'
+        result_performance_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Result/performance'
         performance_filename = os.path.join(result_performance_path, method_performance_name)
         with open(performance_filename, "w") as f:
             json.dump(retrieval_info_m, f)
@@ -102,7 +102,7 @@ def approximate_solution_retrieval_outter(username: str, dataset: str,
         if success_l:
             df['success'] = success_l
         single_query_performance_name = f'{dataset}-retrieval-{method_name}-top{topk}-{build_index_suffix}-{retrieval_suffix}.csv'
-        result_performance_path = f'/home/{username}/Dataset/multi-vector-retrieval/Result/single_query_performance'
+        result_performance_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Result/single_query_performance'
         single_query_performance_filename = os.path.join(result_performance_path, single_query_performance_name)
         df.to_csv(single_query_performance_filename, index=True)
 

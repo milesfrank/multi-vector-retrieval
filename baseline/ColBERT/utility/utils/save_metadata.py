@@ -1,7 +1,7 @@
 from colbert.utils.utils import dotdict
 import os
 import sys
-import git
+# import git
 import time
 import copy
 import ujson
@@ -9,6 +9,7 @@ import socket
 
 
 def get_metadata_only():
+    return
     args = dotdict()
 
     args.hostname = socket.gethostname()
@@ -25,6 +26,7 @@ def get_metadata_only():
 
 
 def get_metadata(args):
+    return
     args = copy.deepcopy(args)
 
     args.hostname = socket.gethostname()

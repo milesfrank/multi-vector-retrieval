@@ -92,8 +92,8 @@ endif ()
 #include_directories(deps/eigen)
 #include_directories(deps/cereal/include)
 
-#set(Eigen3_DIR /home/username2/software/eigen3_install/share/eigen3/cmake)
-find_package(Eigen3 3.3 REQUIRED NO_MODULE)
+#set(Eigen3_DIR /u/mfrank14/csc200/multi-vector-retrieval/eigen-3.4.0/cmake)
+find_package(Eigen3 3.4 REQUIRED NO_MODULE)
 
 #find_package(Threads REQUIRED)
 
@@ -108,10 +108,10 @@ set(BUILD_BFLOAT16 ON)
 #message(${Torch_DIR})
 #find_package(Torch REQUIRED)
 
-#set(spdlog_DIR /home/username2/software/spdlog_install/usr/local/lib/cmake/spdlog)
+# set(spdlog_DIR /u/mfrank14/csc200/spdlog/build)
 find_package(spdlog REQUIRED)
 
-#set(Parlay_DIR /home/username2/software/parlaylib_install/share/parlay/cmake)
+# set(Parlay_DIR /u/mfrank14/csc200/parlaylib/build)
 find_package(Parlay REQUIRED)
 
 #set(MKL_DIR ${PROJECT_SOURCE_DIR}/cmake)
@@ -121,10 +121,10 @@ find_package(Parlay REQUIRED)
 
 # Source dependencies
 find_package(Python COMPONENTS Interpreter Development REQUIRED)
-set(pybind11_DIR /home/username2/software/pybind11_install/usr/local/share/cmake/pybind11)
+# set(pybind11_DIR /u/mfrank14/csc200/pybind11/build)
 find_package(pybind11)
 
-set(ZLIB_LIBRARY /usr/lib/x86_64-linux-gnu/libz.so)
+set(ZLIB_LIBRARY /u/mfrank14/.local/lib/x86_64-linux-gnu/libz.so)
 
 add_subdirectory(baseline/emvb/external/faiss)
 include_directories(baseline/emvb/external/faiss)
@@ -137,7 +137,7 @@ include_directories(src)
 
 find_package(OpenMP REQUIRED)
 
-set(USE_CUDA ON)
+set(USE_CUDA OFF)
 
 if (USE_CUDA)
     message("${Green}use CUDA${ColourReset}")

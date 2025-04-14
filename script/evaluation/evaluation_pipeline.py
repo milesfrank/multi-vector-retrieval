@@ -35,12 +35,14 @@ def approximate_solution_compile_load(username: str, dataset: str, compile_file:
     if compile_file:
         util.compile_file(username=username, module_name=module_name, is_debug=is_debug, move_path=move_path)
 
-    embedding_dir = f'/home/{username}/Dataset/multi-vector-retrieval/Embedding/{dataset}/'
+    embedding_dir = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Embedding/{dataset}/'
 
     base_embedding_dir = os.path.join(embedding_dir, 'base_embedding')
     vec_dim = np.load(os.path.join(base_embedding_dir, f'encoding0_float32.npy')).shape[1]
     n_item = np.load(os.path.join(embedding_dir, f'doclens.npy')).shape[0]
     print(f"dataset {dataset}, n_item {n_item}, vec_dim {vec_dim}")
+
+    print(1, module_name)
     module = importlib.import_module(module_name)
     return module
 
@@ -49,7 +51,7 @@ def approximate_solution_build_index(username: str, dataset: str,
                                      constructor_insert_item: dict, module: object,
                                      module_name: str, build_index_suffix: str,
                                      save_index: bool, constructor_build_index: dict = {}):
-    embedding_dir = f'/home/{username}/Dataset/multi-vector-retrieval/Embedding/{dataset}/'
+    embedding_dir = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Embedding/{dataset}/'
     base_embedding_dir = os.path.join(embedding_dir, 'base_embedding')
     index = module.DocRetrieval(**constructor_insert_item)
     print(f"start insert item")
@@ -76,13 +78,13 @@ def approximate_solution_build_index(username: str, dataset: str,
     print(f"insert time spend {build_index_time_sec:.3f}s")
 
     if save_index:
-        index_dir = f'/home/{username}/Dataset/multi-vector-retrieval/Index/{dataset}/'
+        index_dir = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Index/{dataset}/'
         os.makedirs(os.path.join(index_dir, module_name), exist_ok=True)
         index_filename = os.path.join(index_dir, module_name,
                                       f'{dataset}-{module_name}-{build_index_suffix}.index')
         index.save(index_filename)
 
-    result_performance_path = f'/home/{username}/Dataset/multi-vector-retrieval/Result/performance'
+    result_performance_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Result/performance'
     build_index_performance_filename = os.path.join(result_performance_path,
                                                     f'{dataset}-build_index-{module_name}-{build_index_suffix}.json')
     with open(build_index_performance_filename, 'w') as f:
@@ -92,10 +94,10 @@ def approximate_solution_build_index(username: str, dataset: str,
 
 
 def load_query(username: str, dataset: str):
-    embedding_dir = f'/home/{username}/Dataset/multi-vector-retrieval/Embedding/{dataset}/'
+    embedding_dir = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Embedding/{dataset}/'
     query_l = np.load(os.path.join(embedding_dir, 'query_embedding.npy'))
 
-    rawdata_path = f'/home/{username}/Dataset/multi-vector-retrieval/RawData/{dataset}'
+    rawdata_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/RawData/{dataset}'
 
     query_text_filename = os.path.join(rawdata_path, f'document/queries.dev.tsv')
     if os.path.exists(query_text_filename):
@@ -129,7 +131,7 @@ def approximate_solution_retrieval_outter(username: str, dataset: str,
             index=index, retrieval_config=retrieval_config,
             query_l=query_l, topk=topk)
 
-        result_answer_path = f'/home/{username}/Dataset/multi-vector-retrieval/Result/answer/'
+        result_answer_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Result/answer/'
         method_ans_name = f'{dataset}-{module_name}-top{topk}-{build_index_suffix}-{retrieval_suffix}.tsv'
         retrieval_result_filename = os.path.join(result_answer_path, method_ans_name)
         save_retrieval_result(est_dist_l=est_dist_l, est_id_l=est_id_l,
@@ -149,7 +151,7 @@ def approximate_solution_retrieval_outter(username: str, dataset: str,
                             'build_index': build_index_config, 'retrieval': retrieval_config,
                             'search_time': search_time_m, 'search_accuracy': search_accuracy_m}
         method_performance_name = f'{dataset}-retrieval-{module_name}-top{topk}-{build_index_suffix}-{retrieval_suffix}.json'
-        result_performance_path = f'/home/{username}/Dataset/multi-vector-retrieval/Result/performance'
+        result_performance_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Result/performance'
         performance_filename = os.path.join(result_performance_path, method_performance_name)
         with open(performance_filename, "w") as f:
             json.dump(retrieval_info_m, f)
@@ -161,7 +163,7 @@ def approximate_solution_retrieval_outter(username: str, dataset: str,
         if success_l:
             df['success'] = success_l
         single_query_performance_name = f'{dataset}-retrieval-{module_name}-top{topk}-{build_index_suffix}-{retrieval_suffix}.csv'
-        result_performance_path = f'/home/{username}/Dataset/multi-vector-retrieval/Result/single_query_performance'
+        result_performance_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Result/single_query_performance'
         single_query_performance_filename = os.path.join(result_performance_path, single_query_performance_name)
         df.to_csv(single_query_performance_filename, index=True)
 
@@ -217,7 +219,7 @@ def approximate_solution(username: str, module_name: str, is_debug: bool, move_p
         module_name=module_name, compile_file=False,
         is_debug=is_debug, move_path=move_path)
 
-    index_dir = f'/home/{username}/Dataset/multi-vector-retrieval/Index/{dataset}/'
+    index_dir = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Index/{dataset}/'
     index_filename = os.path.join(index_dir, module_name,
                                   f'{dataset}-{module_name}-{build_index_suffix}.index')
     if os.path.exists(index_filename) and constructor_load_index and load_index:

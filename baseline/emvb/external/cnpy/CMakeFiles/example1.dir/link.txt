@@ -1,0 +1,1 @@
+/usr/lib64/ccache/g++  -O0 -march=native -fopenmp -std=c++11 -g -rdynamic CMakeFiles/example1.dir/example1.cpp.o -o example1   -L/usr/lib/x86_64-linux-gnu  -Wl,-rpath,/u/mfrank14/csc200/multi-vector-retrieval/baseline/emvb/external/cnpy:/usr/lib/x86_64-linux-gnu libcnpy.so -lz

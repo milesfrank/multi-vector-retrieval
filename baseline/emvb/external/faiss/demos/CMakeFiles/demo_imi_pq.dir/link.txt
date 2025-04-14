@@ -1,0 +1,1 @@
+/usr/lib64/ccache/g++  -O0 -march=native -fopenmp -g CMakeFiles/demo_imi_pq.dir/demo_imi_pq.cpp.o -o demo_imi_pq  ../faiss/libfaiss.a /usr/lib/gcc/x86_64-redhat-linux/14/libgomp.so /usr/lib64/libpthread.a /usr/lib64/libflexiblas.so -lm -ldl

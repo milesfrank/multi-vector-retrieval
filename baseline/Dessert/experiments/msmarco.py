@@ -13,9 +13,9 @@ import json
 username = 'username1'
 dataset = 'lotte-small'
 
-dessert_index_path = f'/home/{username}/Dataset/multi-vector-retrieval/Index/{dataset}/dessert'
-embedding_path = f'/home/{username}/Dataset/multi-vector-retrieval/Embedding/{dataset}'
-rawdata_path = f'/home/{username}/Dataset/multi-vector-retrieval/RawData/{dataset}'
+dessert_index_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Index/{dataset}/dessert'
+embedding_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Embedding/{dataset}'
+rawdata_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/RawData/{dataset}'
 # FOLDER = "/share/josh/msmarco"
 
 centroids = np.load(os.path.join(dessert_index_path, 'centroids.npy'))
@@ -198,7 +198,7 @@ def run_experiment(
     print("Mean: ", sum(retrieval_time_l) / len(retrieval_time_l))
     print("#####################")
 
-    result_filename = f"/home/{username}/multi-vector-retrieval/baseline/Dessert/" \
+    result_filename = f"/u/mfrank14/csc200/multi-vector-retrieval/baseline/Dessert/" \
                       f"result/{dataset}-hash_per_table_{hashes_per_table}-n_tables_{num_tables}-init_filter_k_{initial_filter_k}.tsv"
     with open(result_filename, "w") as f:
         for qid_index, r in enumerate(all_pids):
@@ -206,7 +206,7 @@ def run_experiment(
                 qid = qid_map[qid_index]
                 f.write(f"{qid}\t{pid}\t{rank + 1}\n")
 
-    result_config_filename = f"/home/{username}/multi-vector-retrieval/baseline/Dessert/" \
+    result_config_filename = f"/u/mfrank14/csc200/multi-vector-retrieval/baseline/Dessert/" \
                              f"result/{dataset}-hash_per_table_{hashes_per_table}-n_tables_{num_tables}-init_filter_k_{initial_filter_k}.config.json"
     with open(result_config_filename, "w") as f:
         json.dump({

@@ -33,10 +33,10 @@ def build_index(
         hashes_per_table: int = -1,
 ):
     # ---------------------------------- Parameters --------------------------------
-    dessert_index_path = f'/home/{username}/Dataset/multi-vector-retrieval/Index/{dataset}/dessert'
-    embedding_path = f'/home/{username}/Dataset/multi-vector-retrieval/Embedding/{dataset}'
-    rawdata_path = f'/home/{username}/Dataset/multi-vector-retrieval/RawData/{dataset}'
-    result_performance_path = f'/home/{username}/Dataset/multi-vector-retrieval/Result/performance'
+    dessert_index_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Index/{dataset}/dessert'
+    embedding_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Embedding/{dataset}'
+    rawdata_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/RawData/{dataset}'
+    result_performance_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Result/performance'
 
     index_filename = (
         os.path.join(dessert_index_path,
@@ -145,11 +145,11 @@ def retrieval(
         num_tables: int,
         retrieval_config_l: list
 ):
-    dessert_index_path = f'/home/{username}/Dataset/multi-vector-retrieval/Index/{dataset}/dessert'
-    embedding_path = f'/home/{username}/Dataset/multi-vector-retrieval/Embedding/{dataset}'
-    rawdata_path = f'/home/{username}/Dataset/multi-vector-retrieval/RawData/{dataset}'
-    result_performance_path = f'/home/{username}/Dataset/multi-vector-retrieval/Result/performance'
-    result_answer_path = f'/home/{username}/Dataset/multi-vector-retrieval/Result/answer'
+    dessert_index_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Index/{dataset}/dessert'
+    embedding_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Embedding/{dataset}'
+    rawdata_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/RawData/{dataset}'
+    result_performance_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Result/performance'
+    result_answer_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Result/answer'
 
     index_filename = (
         os.path.join(dessert_index_path,
@@ -315,7 +315,7 @@ def retrieval(
                             'build_index': build_index_config, 'retrieval': retrieval_config,
                             'search_time': search_time_m, 'search_accuracy': search_accuracy_m}
         method_performance_name = f'{dataset}-retrieval-{module_name}-top{topk}-{build_index_suffix}-{retrieval_suffix}.json'
-        result_performance_path = f'/home/{username}/Dataset/multi-vector-retrieval/Result/performance'
+        result_performance_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Result/performance'
         performance_filename = os.path.join(result_performance_path, method_performance_name)
         with open(performance_filename, "w") as f:
             json.dump(retrieval_info_m, f)
@@ -328,7 +328,7 @@ def retrieval(
         if success_l:
             df['success'] = success_l
         single_query_performance_name = f'{dataset}-retrieval-{module_name}-top{topk}-{build_index_suffix}-{retrieval_suffix}.csv'
-        result_performance_path = f'/home/{username}/Dataset/multi-vector-retrieval/Result/single_query_performance'
+        result_performance_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Result/single_query_performance'
         single_query_performance_filename = os.path.join(result_performance_path, single_query_performance_name)
         df.to_csv(single_query_performance_filename, index=True)
 
@@ -357,10 +357,10 @@ def retrieval_end_to_end(
         num_tables: int,
         retrieval_config_l: list
 ):
-    dessert_index_path = f'/home/{username}/Dataset/multi-vector-retrieval/Index/{dataset}/dessert'
-    embedding_path = f'/home/{username}/Dataset/multi-vector-retrieval/Embedding/{dataset}'
-    rawdata_path = f'/home/{username}/Dataset/multi-vector-retrieval/RawData/{dataset}'
-    result_answer_path = f'/home/{username}/Dataset/multi-vector-retrieval/end2end/Result/answer'
+    dessert_index_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Index/{dataset}/dessert'
+    embedding_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Embedding/{dataset}'
+    rawdata_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/RawData/{dataset}'
+    result_answer_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/end2end/Result/answer'
 
     index_filename = (
         os.path.join(dessert_index_path,
@@ -430,11 +430,11 @@ def retrieval_end_to_end(
         n_refine_l = []
         index = dessert_py.DocRetrieval.deserialize_from_file(index_filename)
 
-        raw_data_path = f'/home/{username}/Dataset/multi-vector-retrieval/RawData'
-        colbert_project_path = f'/home/{username}/multi-vector-retrieval/baseline/ColBERT'
+        raw_data_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/RawData'
+        colbert_project_path = f'/u/mfrank14/csc200/multi-vector-retrieval/baseline/ColBERT'
         document_data_path = os.path.join(raw_data_path, f'{dataset}/document')
         pretrain_index_path = os.path.join(raw_data_path, 'colbert-pretrain/colbertv2.0')
-        index_path = f'/home/{username}/Dataset/multi-vector-retrieval/Index/{dataset}/plaid'
+        index_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Index/{dataset}/plaid'
         with Run().context(
                 RunConfig(nranks=n_gpu, experiment=dataset, root=os.path.join(colbert_project_path, 'result'))):
 
@@ -536,7 +536,7 @@ def retrieval_end_to_end(
             }
         }
         retrieval_info_m = {'n_query': len(query_str_l), 'topk': topk, 'search_result': search_result_m}
-        output_path = f'/home/{username}/Dataset/multi-vector-retrieval/end2end/Result/performance'
+        output_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/end2end/Result/performance'
         output_filename = os.path.join(output_path,
                                        f'{dataset}-retrieval-dessert-end2end-top{topk}-{build_index_suffix}-{retrieval_suffix}-time.json')
         with open(output_filename, 'w') as f:

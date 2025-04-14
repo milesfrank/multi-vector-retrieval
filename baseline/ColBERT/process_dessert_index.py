@@ -14,9 +14,9 @@ import os
 # small_queries_embeddings.npy: {embedding_path}/query_embedding.npy
 
 def process_dataset(username: str, dataset: str):
-    plaid_index_path = f'/home/{username}/multi-vector-retrieval/Dataset/{dataset}/index/plaid/'
-    dessert_index_path = f'/home/{username}/multi-vector-retrieval/Dataset/{dataset}/index/dessert'
-    embedding_path = f'/home/{username}/multi-vector-retrieval/Dataset/{dataset}/embedding'
+    plaid_index_path = f'/u/mfrank14/csc200/multi-vector-retrieval/Dataset/{dataset}/index/plaid/'
+    dessert_index_path = f'/u/mfrank14/csc200/multi-vector-retrieval/Dataset/{dataset}/index/dessert'
+    embedding_path = f'/u/mfrank14/csc200/multi-vector-retrieval/Dataset/{dataset}/embedding'
 
     os.mkdir(dessert_index_path)
     centroids_load_path = os.path.join(plaid_index_path, 'centroids.pt')

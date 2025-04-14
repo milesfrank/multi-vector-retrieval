@@ -60,7 +60,7 @@ def approximate_solution_build_index(username: str, dataset: str,
     print(f"start insert item")
     start_time = time.time()
 
-    embedding_dir = f'/home/{username}/Dataset/multi-vector-retrieval/Embedding/{dataset}'
+    embedding_dir = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Embedding/{dataset}'
     item_n_vec_l = np.load(os.path.join(embedding_dir, f'doclens.npy')).astype(np.uint32)
     n_vecs = np.sum(item_n_vec_l)
     n_centroid = build_index_config['n_centroid_f'](n_vecs)
@@ -80,13 +80,13 @@ def approximate_solution_build_index(username: str, dataset: str,
     print(f"insert time spend {build_index_time_sec:.3f}s")
 
     if save_index:
-        index_dir = f'/home/{username}/Dataset/multi-vector-retrieval/Index/{dataset}/'
+        index_dir = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Index/{dataset}/'
         os.makedirs(os.path.join(index_dir, module_name), exist_ok=True)
         index_filename = os.path.join(index_dir, module_name,
                                       f'{dataset}-{module_name}-{build_index_suffix}.index')
         index.save(index_filename)
 
-    result_performance_path = f'/home/{username}/Dataset/multi-vector-retrieval/Result/performance'
+    result_performance_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Result/performance'
     build_index_performance_filename = os.path.join(result_performance_path,
                                                     f'{dataset}-build_index-{module_name}-{build_index_suffix}.json')
     with open(build_index_performance_filename, 'w') as f:
@@ -192,7 +192,7 @@ if __name__ == '__main__':
     util.compile_file(username=username, module_name=module_name, is_debug=is_debug, move_path=move_path)
     for dataset in dataset_l:
         for build_index_config in build_index_parameter_l:
-            embedding_dir = f'/home/{username}/Dataset/multi-vector-retrieval/Embedding/{dataset}'
+            embedding_dir = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Embedding/{dataset}'
             vec_dim = np.load(os.path.join(embedding_dir, 'base_embedding', f'encoding0_float32.npy')).shape[1]
             n_item = np.load(os.path.join(embedding_dir, f'doclens.npy')).shape[0]
             item_n_vec_l = np.load(os.path.join(embedding_dir, f'doclens.npy')).astype(np.uint32)

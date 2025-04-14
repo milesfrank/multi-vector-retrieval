@@ -26,13 +26,13 @@ def approximate_solution_retrieval(username: str, dataset: str, build_index_suff
 
     retrieval_suffix = f'nprobe_{nprobe}-thresh_{thresh}-out_second_stage_{out_second_stage}-thresh_query_{thresh_query}-n_doc_to_score_{n_doc_to_score}'
 
-    os.system(f'cd /home/{username}/emvb-fork/build && ./perf_emvb -topk {topk} -nprobe {nprobe} -thresh {thresh} '
+    os.system(f'cd /u/mfrank14/csc200/emvb-fork/build && ./perf_emvb -topk {topk} -nprobe {nprobe} -thresh {thresh} '
               f'-out-second-stage {out_second_stage} -thresh-query {thresh_query} -n-doc-to-score {n_doc_to_score} '
               f'-username {username} -dataset {dataset} -build-index-suffix {build_index_suffix} -retrieval-suffix {retrieval_suffix}')
 
-    result_fname = f'/home/{username}/Dataset/multi-vector-retrieval/Result/answer/' \
+    result_fname = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Result/answer/' \
                    f'{dataset}-emvb-top{topk}-{build_index_suffix}-{retrieval_suffix}.tsv'
-    performance_fname = f'/home/{username}/Dataset/multi-vector-retrieval/Result/answer/' \
+    performance_fname = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Result/answer/' \
                         f'{dataset}-emvb-performance-top{topk}-{build_index_suffix}-{retrieval_suffix}.tsv'
 
     performance_df = pd.read_csv(performance_fname, delimiter='\t')
@@ -63,7 +63,7 @@ def approximate_solution_build_index(username: str, dataset: str,
                                      build_index_config: dict, build_index_suffix: str):
     print(f"start build index")
 
-    embedding_dir = f'/home/{username}/Dataset/multi-vector-retrieval/Embedding/{dataset}'
+    embedding_dir = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Embedding/{dataset}'
     item_n_vec_l = np.load(os.path.join(embedding_dir, f'doclens.npy')).astype(np.uint32)
     n_vecs = np.sum(item_n_vec_l)
     n_centroid = build_index_config['n_centroid_f'](n_vecs)
@@ -81,7 +81,7 @@ def approximate_solution_build_index(username: str, dataset: str,
 
     module_name = 'emvb'
 
-    result_performance_path = f'/home/{username}/Dataset/multi-vector-retrieval/Result/performance'
+    result_performance_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Result/performance'
     build_index_performance_filename = os.path.join(result_performance_path,
                                                     f'{dataset}-build_index-{module_name}-{build_index_suffix}.json')
     with open(build_index_performance_filename, 'w') as f:
@@ -187,7 +187,7 @@ if __name__ == '__main__':
     util.compile_file(username=username, is_debug=is_debug)
     for dataset in dataset_l:
         for build_index_config in build_index_parameter_l:
-            embedding_dir = f'/home/{username}/Dataset/multi-vector-retrieval/Embedding/{dataset}'
+            embedding_dir = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Embedding/{dataset}'
             vec_dim = np.load(os.path.join(embedding_dir, 'base_embedding', f'encoding0_float32.npy')).shape[1]
             n_item = np.load(os.path.join(embedding_dir, f'doclens.npy')).shape[0]
             item_n_vec_l = np.load(os.path.join(embedding_dir, f'doclens.npy')).astype(np.uint32)

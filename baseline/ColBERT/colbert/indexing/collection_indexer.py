@@ -51,6 +51,8 @@ class CollectionIndexer():
             self.config.help()
 
         self.collection = Collection.cast(collection)
+
+        print(self.config)
         self.checkpoint = Checkpoint(self.config.checkpoint, colbert_config=self.config)
         if self.use_gpu:
             self.checkpoint = self.checkpoint.cuda()

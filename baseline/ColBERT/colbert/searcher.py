@@ -1,5 +1,6 @@
 import os
 import torch
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 from tqdm import tqdm
 from typing import Union
@@ -39,8 +40,8 @@ class Searcher:
         self.checkpoint = Checkpoint(self.checkpoint, colbert_config=self.config)
         use_gpu = self.config.total_visible_gpus > 0
         if use_gpu:
-            self.checkpoint = self.checkpoint.cuda()
-        self.checkpoint = self.checkpoint.cuda()
+            self.checkpoint = self.checkpoint.to(device)
+        self.checkpoint = self.checkpoint.to(device)
         self.ranker = IndexScorer(self.index, False)
 
         print_memory_stats()

@@ -6,22 +6,22 @@ import re
 
 
 def compile_file(username: str, module_name: str, is_debug: bool = False, move_path='data'):
-    build_path = f'/home/{username}/multi-vector-retrieval/build'
+    build_path = f'/u/mfrank14/csc200/multi-vector-retrieval/build'
     build_type = 'Debug' if is_debug else 'Release'
     os.system(f'cd {build_path} && cmake -DCMAKE_BUILD_TYPE={build_type} ..')
     os.system(f'cd {build_path} && make -j')
-    module_filename = os.path.join(build_path, f'{module_name}.cpython-38-x86_64-linux-gnu.so')
-    os.system(f'cp {module_filename} /home/{username}/multi-vector-retrieval/script/{move_path}/')
+    module_filename = os.path.join(build_path, f'{module_name}.cpython-312-x86_64-linux-gnu.so')
+    os.system(f'cp {module_filename} /u/mfrank14/csc200/multi-vector-retrieval/script/{move_path}/')
 
 
 def compile_file_batch_module(username: str, module_name_l: list, is_debug: bool = False, move_path='data'):
-    build_path = f'/home/{username}/multi-vector-retrieval/build'
+    build_path = f'/u/mfrank14/csc200/multi-vector-retrieval/build'
     build_type = 'Debug' if is_debug else 'Release'
     os.system(f'cd {build_path} && cmake -DCMAKE_BUILD_TYPE={build_type} ..')
     os.system(f'cd {build_path} && make -j')
     for module_name in module_name_l:
-        module_filename = os.path.join(build_path, f'{module_name}.cpython-38-x86_64-linux-gnu.so')
-        os.system(f'cp {module_filename} /home/{username}/multi-vector-retrieval/script/{move_path}/')
+        module_filename = os.path.join(build_path, f'{module_name}.cpython-312-x86_64-linux-gnu.so')
+        os.system(f'cp {module_filename} /u/mfrank14/csc200/multi-vector-retrieval/script/{move_path}/')
 
 
 def item_vecs_in_chunk(vecs_l: np.ndarray, itemlen_l: np.ndarray, itemID: int):
@@ -45,7 +45,7 @@ def get_n_chunk(base_dir: str):
 
 
 def get_DEFAULT_SIZE(username: str, dataset: str):
-    embedding_dir = f'/home/{username}/Dataset/multi-vector-retrieval/Embedding/{dataset}/'
+    embedding_dir = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Embedding/{dataset}/'
     base_embedding_dir = os.path.join(embedding_dir, 'base_embedding')
     itemlen_l_chunk = np.load(os.path.join(base_embedding_dir, f'doclens{0}.npy'))
     return len(itemlen_l_chunk)

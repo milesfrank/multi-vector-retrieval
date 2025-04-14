@@ -41,14 +41,14 @@ class CollectionIndexerGenerate():
         self.username = username
         self.dataset = dataset
 
-        embedding_path = f'/home/{username}/Dataset/multi-vector-retrieval/Embedding/{dataset}'
+        embedding_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Embedding/{dataset}'
         self.item_n_vec_l = np.load(os.path.join(embedding_path, 'doclens.npy')).astype(np.int32)
         self.n_item = len(self.item_n_vec_l)
         print(f'n_item {self.n_item}')
 
         self.use_gpu = True
 
-        self.index_path = f'/home/{username}/Dataset/multi-vector-retrieval/Index/{dataset}/plaid'
+        self.index_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Index/{dataset}/plaid'
         os.system(f'rm -r {self.index_path}')
         os.makedirs(self.index_path, exist_ok=False)
 
@@ -432,7 +432,7 @@ def get_sample_vecs_l(sample_itemID_l: list, DEFAULT_CHUNKSIZE: int, username: s
         else:
             chunkID2offset_m[chunkID].append(chunk_offset)
 
-    embedding_dir = f'/home/{username}/Dataset/multi-vector-retrieval/Embedding/{dataset}/'
+    embedding_dir = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Embedding/{dataset}/'
     base_embedding_dir = os.path.join(embedding_dir, 'base_embedding')
 
     item_n_vecs_l = np.load(os.path.join(embedding_dir, 'doclens.npy')).astype(np.uint64)

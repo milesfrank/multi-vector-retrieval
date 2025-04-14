@@ -8,6 +8,8 @@ import struct
 import faiss
 
 import torch
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 import tqdm
 
 os.environ["OPENBLAS_NUM_THREADS"] = "1"
@@ -17,7 +19,6 @@ ROOT_PATH = os.path.join(FILE_ABS_PATH, os.pardir, os.pardir)
 sys.path.append(ROOT_PATH)
 from script.evaluation import evaluation_pipeline
 from script.data import util
-
 
 def approximate_solution_retrieval(index: object, retrieval_config: dict, query_l: np.ndarray, topk: int):
     n_candidate = retrieval_config['n_candidate']
@@ -51,12 +52,12 @@ def approximate_solution_retrieval(index: object, retrieval_config: dict, query_
 def compress_into_codes(embs: np.ndarray, centroid_l: np.ndarray):
     codes = []
 
-    centroid_l = torch.Tensor(centroid_l).to('cuda')
+    centroid_l = torch.Tensor(centroid_l).to(device)
     # print(centroid_l)
     bsize = (1 << 29) // centroid_l.shape[0]
     embs = torch.from_numpy(embs)
     for batch in embs.split(bsize):
-        indices = (centroid_l.to('cuda') @ batch.T.to('cuda').float()).max(dim=0).indices
+        indices = (centroid_l.to(device) @ batch.T.to(device).float()).max(dim=0).indices
         indices = indices.to('cpu')
         codes.append(indices)
 
@@ -66,7 +67,7 @@ def compress_into_codes(embs: np.ndarray, centroid_l: np.ndarray):
 def build_index(username: str, dataset: str, index: object, module: object,
                 vec_dim: int, k_sim: int, d_proj: int, r_reps: int,
                 n_centroid_per_subspace: int, dim_per_subspace: int):
-    embedding_dir = f'/home/{username}/Dataset/multi-vector-retrieval/Embedding/{dataset}/'
+    embedding_dir = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Embedding/{dataset}/'
     base_embedding_dir = os.path.join(embedding_dir, 'base_embedding')
 
     # generate the random gaussian vector
@@ -87,8 +88,8 @@ def build_index(username: str, dataset: str, index: object, module: object,
     ip_vector_l = np.zeros(shape=(n_item, r_reps * (2 ** k_sim) * d_proj), dtype=np.float32)
     vec_l = np.zeros(shape=(n_vecs, vec_dim), dtype=np.float32)
 
-    partition_vec_l_cuda = partition_vec_l.cuda()
-    random_matrix_l_cuda = random_matrix_l.cuda()
+    partition_vec_l_cuda = partition_vec_l.to(device)
+    random_matrix_l_cuda = random_matrix_l.to(device)
 
     print("compute assignment of centroid vector")
     n_chunk = util.get_n_chunk(base_embedding_dir)
@@ -100,7 +101,7 @@ def build_index(username: str, dataset: str, index: object, module: object,
         n_item_chunk = itemlen_l_chunk.shape[0]
         n_vec_chunk = item_vecs_l_chunk.shape[0]
 
-        item_vecs_l_chunk_cuda = torch.from_numpy(item_vecs_l_chunk).cuda()
+        item_vecs_l_chunk_cuda = torch.from_numpy(item_vecs_l_chunk).to(device)
         # (batch_n_vec, vec_dim) * (r_reps, k_sim, vec_dim) -> (batch_n_vec, r_reps, k_sim)
         partition_bit_l_cuda = torch.einsum('ij,klj->ikl', item_vecs_l_chunk_cuda, partition_vec_l_cuda)
         partition_bit_l_cuda = torch.sign(partition_bit_l_cuda).int()
@@ -120,7 +121,7 @@ def build_index(username: str, dataset: str, index: object, module: object,
                                                         r_reps=r_reps, k_sim=k_sim, vec_dim=vec_dim)
         print("after assign_cluster_vector")
 
-        cluster_vector_l_cuda = torch.from_numpy(cluster_vector_l).cuda()
+        cluster_vector_l_cuda = torch.from_numpy(cluster_vector_l).to(device)
         print(cluster_vector_l_cuda.dtype, random_matrix_l_cuda.dtype)
         # (n_item_chunk, r_reps, 2 ** k_sim, vec_dim) * (r_reps, d_proj, vec_dim) -> (n_item_chunk, r_reps, 2 ** k_sim, d_proj)
         ip_vector_l_cuda = torch.einsum('iljk,lmk->iljm', cluster_vector_l_cuda, random_matrix_l_cuda)
@@ -182,7 +183,7 @@ def approximate_solution_build_index(username: str, dataset: str,
     print(f"start insert item")
     start_time = time.time()
 
-    embedding_dir = f'/home/{username}/Dataset/multi-vector-retrieval/Embedding/{dataset}'
+    embedding_dir = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Embedding/{dataset}'
     vec_dim = np.load(os.path.join(embedding_dir, 'base_embedding', f'encoding0_float32.npy')).shape[1]
     k_sim = build_index_config['k_sim']
     d_proj = build_index_config['d_proj']
@@ -198,7 +199,7 @@ def approximate_solution_build_index(username: str, dataset: str,
     build_index_time_sec = end_time - start_time
     print(f"insert time spend {build_index_time_sec:.3f}s")
 
-    result_performance_path = f'/home/{username}/Dataset/multi-vector-retrieval/Result/performance'
+    result_performance_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Result/performance'
     build_index_performance_filename = os.path.join(result_performance_path,
                                                     f'{dataset}-build_index-{module_name}-{build_index_suffix}.json')
     with open(build_index_performance_filename, 'w') as f:
@@ -286,7 +287,7 @@ if __name__ == '__main__':
     util.compile_file(username=username, module_name=module_name, is_debug=is_debug, move_path=move_path)
     for dataset in dataset_l:
         for build_index_config in build_index_parameter_l:
-            embedding_dir = f'/home/{username}/Dataset/multi-vector-retrieval/Embedding/{dataset}'
+            embedding_dir = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Embedding/{dataset}'
             vec_dim = np.load(os.path.join(embedding_dir, 'base_embedding', f'encoding0_float32.npy')).shape[1]
             n_item = np.load(os.path.join(embedding_dir, f'doclens.npy')).shape[0]
             item_n_vec_l = np.load(os.path.join(embedding_dir, f'doclens.npy')).astype(np.uint32)

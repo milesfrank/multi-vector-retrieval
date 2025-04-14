@@ -44,7 +44,7 @@ def get_sample_vecs_l(sample_itemID_l: list, DEFAULT_CHUNKSIZE: int, username: s
         else:
             chunkID2offset_m[chunkID].append(chunk_offset)
 
-    embedding_dir = f'/home/{username}/Dataset/multi-vector-retrieval/Embedding/{dataset}/'
+    embedding_dir = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Embedding/{dataset}/'
     base_embedding_dir = os.path.join(embedding_dir, 'base_embedding')
 
     item_n_vecs_l = np.load(os.path.join(embedding_dir, 'doclens.npy')).astype(np.uint64)
@@ -100,7 +100,7 @@ def get_sample_vecs_l(sample_itemID_l: list, DEFAULT_CHUNKSIZE: int, username: s
 
 
 def sample_vector(username: str, dataset: str):
-    embedding_dir = f'/home/{username}/Dataset/multi-vector-retrieval/Embedding/{dataset}/'
+    embedding_dir = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Embedding/{dataset}/'
     vec_dim = np.load(os.path.join(embedding_dir, 'base_embedding', f'encoding0_float32.npy')).shape[1]
     item_n_vec_l = np.load(os.path.join(embedding_dir, f'doclens.npy')).astype(np.uint32)
     n_item = item_n_vec_l.shape[0]
@@ -136,7 +136,7 @@ def compute_residual(username: str, dataset: str,
                      n_vec: int, pq_n_partition: int,
                      module:object
                      ):
-    embedding_dir = f'/home/{username}/Dataset/multi-vector-retrieval/Embedding/{dataset}/'
+    embedding_dir = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Embedding/{dataset}/'
     base_embedding_dir = os.path.join(embedding_dir, 'base_embedding')
     assert vec_dim % pq_n_partition == 0
 
@@ -173,20 +173,20 @@ def compute_residual(username: str, dataset: str,
 def build_index(username: str, dataset: str, n_centroid: int, pq_n_partition: int, pq_n_bit_per_partition: int,
                 module: object):
     '''build the IVFPQ index'''
-    embedding_path = f'/home/{username}/Dataset/multi-vector-retrieval/Embedding/{dataset}'
-    index_path = f'/home/{username}/Dataset/multi-vector-retrieval/Index/{dataset}/emvb'
+    embedding_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Embedding/{dataset}'
+    index_path = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Index/{dataset}/emvb'
 
     os.makedirs(index_path, exist_ok=True)
 
     np.save(os.path.join(index_path, "doclens.npy"),
-            np.load(f'/home/{username}/Dataset/multi-vector-retrieval/Embedding/{dataset}/doclens.npy').astype(
+            np.load(f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Embedding/{dataset}/doclens.npy').astype(
                 np.int32))
 
-    # n_query = np.load(f'/home/{username}/Dataset/multi-vector-retrieval/Embedding/{dataset}/query_embedding.npy').shape[0]
+    # n_query = np.load(f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Embedding/{dataset}/query_embedding.npy').shape[0]
     # qID_l = np.arange(n_query)
     # np.savetxt(os.path.join(index_path, "qID_l.txt"), qID_l, fmt='%d')
 
-    query_text_fname = f'/home/{username}/Dataset/multi-vector-retrieval/RawData/{dataset}/document/queries.dev.tsv'
+    query_text_fname = f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/RawData/{dataset}/document/queries.dev.tsv'
     qID_l = []
     with open(query_text_fname, 'r') as f:
         for line in f:
@@ -222,7 +222,7 @@ def build_index(username: str, dataset: str, n_centroid: int, pq_n_partition: in
                 "pq_n_bit_per_partition": pq_n_bit_per_partition}
 
     np.save(os.path.join(index_path, "query_embeddings.npy"),
-            np.load(f'/home/{username}/Dataset/multi-vector-retrieval/Embedding/{dataset}/query_embedding.npy'))
+            np.load(f'/u/mfrank14/csc200/Dataset/multi-vector-retrieval/Embedding/{dataset}/query_embedding.npy'))
 
     item_n_vec_l = np.load(os.path.join(embedding_path, 'doclens.npy')).astype(np.uint32)
     ## total number of embeddings in your collection. Usually it can be obtained from index.ntotal
